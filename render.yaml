@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: travelclub
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://sarathkumarsm16_db_user:Sarath%242003%24@tourplanners.x5gqvwd.mongodb.net/formDB?retryWrites=true&w=majority
+
+      - key: EMAIL
+        value: sarathkumarsm16@gmail.com
+
+      - key: PASS
+        value: your_app_password
