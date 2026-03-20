@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Group</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Dancing+Script:wght@600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #1a1208;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            font-family: 'Crimson Pro', serif;
+        }
+
+        /* frame */
+
+        .frame-outer {
+            max-width: 640px;
+            width: 100%;
+            border-radius: 6px;
+            padding: 6px;
+            background: linear-gradient(135deg, #f5d77a, #8b6914, #f5d77a, #c9a227, #8b6914);
+            box-shadow: 0 0 60px rgba(201, 162, 39, .5);
+        }
+
+        .frame-inner {
+            background: linear-gradient(160deg, #f5ead5, #e8d9b5, #f0e2c0, #ddd0a0);
+            padding-bottom: 40px;
+        }
+
+        /* hero */
+
+        .hero {
+            text-align: center;
+            padding: 36px 20px 28px;
+            background: radial-gradient(ellipse at 50% 10%, #1a2a4a 0%, #0d0d1a 70%);
+            color: white;
+        }
+
+        .title-welcome {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 60px;
+            color: #f5d77a;
+        }
+
+        .title-to-our {
+            letter-spacing: 6px;
+            margin-top: 5px;
+        }
+
+        .title-club {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 45px;
+            color: #3fa9f5;
+        }
+
+        /* body */
+
+        .letter-body {
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .salutation {
+            font-family: 'Dancing Script', cursive;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .letter-p {
+            font-size: 18px;
+            margin-bottom: 18px;
+            line-height: 1.7;
+        }
+
+        .sign-off {
+            margin-top: 30px;
+        }
+
+        .sign-off span {
+            display: block;
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+        }
+
+        /* buttons */
+
+        .btn {
+            margin-top: 25px;
+            padding: 12px 22px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .download-btn {
+            background: #c9a227;
+            color: white;
+        }
+
+        .email-btn {
+            background: #1a6bb5;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+
+        <div class="frame-outer" id="certificate">
+
+            <div class="frame-inner">
+
+                <div class="hero">
+                    <div class="title-welcome">WELCOME</div>
+                    <div class="title-to-our">✦ TO OUR ✦</div>
+                    <div class="title-club">THE BOYS CLUB</div>
+                </div>
+                <p class="letter-p">
+                    Issued Date: <strong id="date"></strong>
+                </p>
+
+                <div class="letter-body">
+
+                    <div class="salutation">
+                        Hello <span id="memberName">Loading...</span>,
+                    </div>
+
+                    <p class="letter-p">
+                        Certificate ID: <strong id="certId">Loading...</strong>
+                    </p>
+
+                    <p class="letter-p">We are delighted to welcome you to our club!</p>
+
+                    <p class="letter-p">
+                        Our club is a place where <strong>friendship, creativity, and teamwork</strong> come together.
+                    </p>
+
+                    <p class="letter-p">
+                        Being part of this club means more than just joining a group — it means becoming part of a
+                        family that supports, learns, and grows together.
+                    </p>
+
+                    <p class="letter-p">
+                        Once again, welcome to our club 🎉. We look forward to an amazing journey together!
+                    </p>
+
+                    <div style="text-align:center; margin-top:20px;">
+                        <img id="qrCode" width="120" />
+                    </div>
+
+                    <div class="sign-off">
+                        <span>Warm regards,</span>
+                        <span>The Club Team</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div style="text-align:center">
+
+            <button class="btn download-btn" onclick="downloadCertificate()">
+                Download Certificate
+            </button>
+
+            <button class="btn email-btn" onclick="sendCertificate()">
+                Send Certificate to Email
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- libraries -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+    <script>
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        let user = null;
+
+        // DATE
+        document.getElementById("date").innerText =
+            new Date().toLocaleDateString();
+
+        // LOAD USER
+        async function loadUser() {
+            try {
+                const res = await fetch("/user/" + id);
+                user = await res.json();
+
+                document.getElementById("memberName").innerText = user.name;
+
+                document.getElementById("certId").innerText = user.certificateId;
+
+                const verifyUrl = `${window.location.origin}/verify.html?id=${user.certificateId}`;
+
+                QRCode.toDataURL(verifyUrl, function (err, url) {
+                    document.getElementById("qrCode").src = url;
+                });
+
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        loadUser();
+
+
+        // DOWNLOAD CERTIFICATE
+        async function downloadCertificate() {
+
+            const original = document.getElementById("certificate");
+
+            const clone = original.cloneNode(true);
+
+            clone.style.position = "absolute";
+            clone.style.left = "-9999px";
+            clone.style.width = "1120px";
+
+            document.body.appendChild(clone);
+
+            const canvas = await html2canvas(clone, { scale: 2 });
+
+            const imgData = canvas.toDataURL("image/png");
+
+            const { jsPDF } = window.jspdf;
+
+            const pdf = new jsPDF("landscape", "mm", "a4");
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            const imgRatio = canvas.width / canvas.height;
+
+            let imgWidth = pageWidth;
+            let imgHeight = imgWidth / imgRatio;
+
+            if (imgHeight > pageHeight) {
+                imgHeight = pageHeight;
+                imgWidth = imgHeight * imgRatio;
+            }
+
+            const x = (pageWidth - imgWidth) / 2;
+            const y = (pageHeight - imgHeight) / 2;
+
+            pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+
+            pdf.save("certificate.pdf");
+
+            document.body.removeChild(clone);
+        }
+
+
+        // SEND EMAIL
+        async function sendCertificate() {
+
+            if (!user) {
+                alert("User not loaded yet");
+                return;
+            }
+
+            const element = document.getElementById("certificate");
+
+            const canvas = await html2canvas(element);
+
+            const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
+
+            await fetch("/send-certificate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    name: user.name,
+                    imageBase64: imageBase64
+                })
+            });
+
+            alert("Certificate Sent");
+        }
+
+    </script>
+
+</body>
+
+
+</html>
