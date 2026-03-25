@@ -191,10 +191,6 @@
                 Send Certificate to Email
             </button>
 
-            <button onclick="alert('WORKING')">
-                TEST BUTTON
-            </button>
-
         </div>
 
     </div>
@@ -287,16 +283,20 @@
         // SEND EMAIL
         async function sendCertificate() {
 
-            alert("🔥 Button Clicked");
+            alert("STEP 1");
 
             if (!user) {
                 alert("User not loaded yet");
                 return;
             }
 
+            alert("STEP 2");
+
             const element = document.getElementById("certificate");
 
             const canvas = await html2canvas(element);
+
+            alert("STEP 3");
 
             const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
 
