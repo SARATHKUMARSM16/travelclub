@@ -294,7 +294,7 @@
 
             const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
 
-            await fetch("/send-certificate", {
+            fetch("http://localhost:3000/send-certificate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
