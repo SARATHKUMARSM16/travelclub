@@ -294,7 +294,7 @@
 
             const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
 
-            fetch("http://localhost:3000/send-certificate", {
+            await fetch("https://travelclub-fg4k.onrender.com/send-certificate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
