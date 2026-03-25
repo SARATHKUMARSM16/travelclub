@@ -300,7 +300,7 @@
 
             const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
 
-            await fetch("https://travelclub-fg4k.onrender.com/send-certificate", {
+            await fetch("/send-certificate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -312,7 +312,7 @@
                 })
             });
 
-            alert("STEP 4");
+            alert("STEP 4 ");
         }
 
     </script>
