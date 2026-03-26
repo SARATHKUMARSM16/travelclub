@@ -247,7 +247,9 @@
 
             // ✅ element -> clone fix panninom
             const canvas = await html2canvas(clone, {
-                scale: 0.5
+                scale: 2,
+                useCORS: true,  
+                logging: false
             });
 
             const imgData = canvas.toDataURL("image/png");
