@@ -300,19 +300,28 @@
 
             const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
 
-            await fetch("/send-certificate", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email: user.email,
-                    name: user.name,
-                    imageBase64: imageBase64
-                })
-            });
+            try {
 
-            alert("STEP 4 ");
+                const res = await fetch("https://travelclub-fg4k.onrender.com/send-certificate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: user.email,
+                        name: user.name,
+                        imageBase64: imageBase64
+                    })
+                });
+
+                console.log("RESPONSE:", res);
+
+                alert("STEP 4 DONE ✅");
+
+            } catch (err) {
+                alert("❌ FETCH FAILED");
+                console.log("ERROR:", err);
+            }
         }
 
     </script>
