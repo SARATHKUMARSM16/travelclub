@@ -237,30 +237,25 @@
 
         // DOWNLOAD CERTIFICATE
         async function downloadCertificate() {
-
             const original = document.getElementById("certificate");
 
             const clone = original.cloneNode(true);
-
             clone.style.position = "absolute";
             clone.style.left = "-9999px";
             clone.style.width = "1120px";
-
             document.body.appendChild(clone);
 
-            const canvas = await html2canvas(element, {
-                scale: 0.5   // 🔥 IMPORTANT (fix 500 error)
+            // ✅ element -> clone fix panninom
+            const canvas = await html2canvas(clone, {
+                scale: 0.5
             });
 
             const imgData = canvas.toDataURL("image/png");
-
             const { jsPDF } = window.jspdf;
-
             const pdf = new jsPDF("landscape", "mm", "a4");
 
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
-
             const imgRatio = canvas.width / canvas.height;
 
             let imgWidth = pageWidth;
@@ -275,12 +270,10 @@
             const y = (pageHeight - imgHeight) / 2;
 
             pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
-
             pdf.save("certificate.pdf");
 
             document.body.removeChild(clone);
         }
-
 
         // SEND EMAIL
         async function sendCertificate() {
