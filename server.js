@@ -115,7 +115,7 @@ app.get("/certificate", (req, res) =>
 
 /* -------------------- ADD USER (WITH CERT ID) -------------------- */
 
-app.post("/submit", async (req, res) => {
+app.post("/submit", upload.single("image"), async (req, res) => {
 
   const error = validateUser(req.body);
   if (error) return res.send(error);
@@ -123,9 +123,11 @@ app.post("/submit", async (req, res) => {
   const certId = await generateCertificateId();
 
   const user = new User({
-    ...req.body,
+    name: req.body.name,
+    email: req.body.email,
     age: Number(req.body.age),
-    image: null,
+    number: req.body.number,
+    image: req.file ? req.file.filename : null,
     certificateId: certId
   });
 
@@ -134,6 +136,7 @@ app.post("/submit", async (req, res) => {
   } catch (err) {
     return res.status(500).send("DB Error");
   }
+
   res.redirect("/userspage");
 });
 
