@@ -190,10 +190,7 @@ app.delete("/delete/:id", async (req, res) => {
 /* -------------------- EMAIL -------------------- */
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,    
-  secure: false, 
-  family: 4, 
+  service: "gmail",
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASS
