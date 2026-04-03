@@ -207,6 +207,8 @@ app.post("/send-certificate", async (req, res) => {
     console.log("🚀 API HIT");
     console.log("TO:", email);
 
+    const certificateLink = `https://travelclub-hwfv.onrender.com/certificate?id=${certificateId}`;
+
     await transporter.sendMail({
       from: '"The Boys Club" <sarathkumarsm16@gmail.com>',
       to: email,
@@ -214,8 +216,9 @@ app.post("/send-certificate", async (req, res) => {
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>Welcome, ${name}! 🎉</h2>
-          <p>We have attached your welcome certificate as a PDF for your reference.</p>
+          <p>Ungaloda welcome certificate PDF attach pannirukkom!</p>
           <p>Certificate ID: <strong>${certificateId}</strong></p>
+          <p>Online paakanum na: <a href="${certificateLink}">Click here</a></p>
         </div>
       `,
       attachments: [
