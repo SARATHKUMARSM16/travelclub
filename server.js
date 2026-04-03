@@ -6,6 +6,7 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const SibApiV3Sdk = require("sib-api-v3-sdk");
+const session = require("express-session");
 require("dotenv").config();
 
 const app = express();
@@ -16,6 +17,24 @@ app.use(cors({ origin: "*" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.static(__dirname, { index: false }));
+
+// ✅ Session setup
+app.use(session({
+  secret: process.env.SESSION_SECRET || "travelclub_secret_key",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day
+}));
+
+/* -------------------- AUTH MIDDLEWARE -------------------- */
+
+function requireAdmin(req, res, next) {
+  if (req.session && req.session.isAdmin) {
+    next();
+  } else {
+    res.redirect("/");
+  }
+}
 
 /* -------------------- MONGODB -------------------- */
 
@@ -97,25 +116,26 @@ function validateUser({ name, email, age, number }) {
 
 /* -------------------- PAGES -------------------- */
 
-// ✅ / -> login page
+// Public pages
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "login.html"))
 );
 
-app.get("/adduser", (req, res) =>
+app.get("/certificate", (req, res) =>
+  res.sendFile(path.join(__dirname, "certificate.html"))
+);
+
+// ✅ Protected pages — requireAdmin middleware
+app.get("/adduser", requireAdmin, (req, res) =>
   res.sendFile(path.join(__dirname, "index.html"))
 );
 
-app.get("/userspage", (req, res) =>
+app.get("/userspage", requireAdmin, (req, res) =>
   res.sendFile(path.join(__dirname, "users.html"))
 );
 
-app.get("/editpage", (req, res) =>
+app.get("/editpage", requireAdmin, (req, res) =>
   res.sendFile(path.join(__dirname, "edit.html"))
-);
-
-app.get("/certificate", (req, res) =>
-  res.sendFile(path.join(__dirname, "certificate.html"))
 );
 
 /* -------------------- LOGIN -------------------- */
@@ -127,15 +147,23 @@ app.post("/login", (req, res) => {
     username === process.env.ADMIN_USER &&
     password === process.env.ADMIN_PASS
   ) {
+    req.session.isAdmin = true;  // ✅ Server side session set
     res.json({ success: true });
   } else {
     res.json({ success: false });
   }
 });
 
+/* -------------------- LOGOUT -------------------- */
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
+
 /* -------------------- ADD USER -------------------- */
 
-app.post("/submit", upload.single("image"), async (req, res) => {
+app.post("/submit", requireAdmin, upload.single("image"), async (req, res) => {
 
   const error = validateUser(req.body);
   if (error) return res.send(error);
@@ -162,7 +190,7 @@ app.post("/submit", upload.single("image"), async (req, res) => {
 
 /* -------------------- GET USERS -------------------- */
 
-app.get("/users", async (req, res) => {
+app.get("/users", requireAdmin, async (req, res) => {
   const search = req.query.search;
   if (!search) return res.json(await User.find());
 
@@ -183,7 +211,7 @@ app.get("/user/:id", async (req, res) => {
 
 /* -------------------- UPDATE -------------------- */
 
-app.post("/update/:id", upload.single("image"), async (req, res) => {
+app.post("/update/:id", requireAdmin, upload.single("image"), async (req, res) => {
 
   const error = validateUser(req.body);
   if (error) return res.send(error);
@@ -203,7 +231,7 @@ app.post("/update/:id", upload.single("image"), async (req, res) => {
 
 /* -------------------- DELETE -------------------- */
 
-app.delete("/delete/:id", async (req, res) => {
+app.delete("/delete/:id", requireAdmin, async (req, res) => {
   await User.findByIdAndDelete(req.params.id);
   res.send("Deleted");
 });
