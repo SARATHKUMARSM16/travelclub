@@ -241,6 +241,39 @@ app.get("/api/verify/:id", async (req, res) => {
   });
 });
 
+                          //  LOGIN
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  if (
+    username === process.env.ADMIN_USER &&
+    password === process.env.ADMIN_PASS
+  ) {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+});
+
+                          //  ROUTE
+app.get("/loginpage", (req, res) =>
+  res.sendFile(path.join(__dirname, "login.html"))
+);
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  if (
+    username === process.env.ADMIN_USER &&
+    password === process.env.ADMIN_PASS
+  ) {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+});
+
+
 /* -------------------- SERVER -------------------- */
 
 const PORT = process.env.PORT || 3000;
