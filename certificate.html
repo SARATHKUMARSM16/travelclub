@@ -282,8 +282,21 @@ async function sendCertificate() {
     if (!user) { alert("User not loaded yet"); return; }
 
     try {
-        const element = document.getElementById("certificate");
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
+        // Clone use pannrom - screen size affect aagadha
+        const original = document.getElementById("certificate");
+        const clone = original.cloneNode(true);
+        clone.style.position = "absolute";
+        clone.style.left = "-9999px";
+        clone.style.width = "640px";  // small size
+        document.body.appendChild(clone);
+
+        const canvas = await html2canvas(clone, {
+            scale: 1,        // ✅ 2 -> 1 (size kudutha)
+            useCORS: true,
+            logging: false
+        });
+
+        document.body.removeChild(clone);
 
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF("landscape", "mm", "a4");
@@ -299,8 +312,11 @@ async function sendCertificate() {
         const x = (pageWidth - imgWidth) / 2;
         const y = (pageHeight - imgHeight) / 2;
 
-        pdf.addImage(canvas.toDataURL("image/png"), "PNG", x, y, imgWidth, imgHeight);
+        pdf.addImage(canvas.toDataURL("image/jpeg", 0.7), "JPEG", x, y, imgWidth, imgHeight); // ✅ PNG->JPEG, quality 0.7
+
         const pdfBase64 = pdf.output("datauristring").split(",")[1];
+
+        console.log("PDF size:", Math.round(pdfBase64.length / 1024), "KB");
 
         const res = await fetch("/send-certificate", {
             method: "POST",
