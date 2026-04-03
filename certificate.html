@@ -278,48 +278,37 @@
         }
 
         // SEND EMAIL
-        async function sendCertificate() {
+async function sendCertificate() {
 
-            alert("STEP 1");
+    if (!user) {
+        alert("User not loaded yet");
+        return;
+    }
 
-            if (!user) {
-                alert("User not loaded yet");
-                return;
-            }
+    try {
+        const res = await fetch("/send-certificate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: user.email,
+                name: user.name,
+                certificateId: user.certificateId  // ✅ imageBase64 -> certificateId
+            })
+        });
 
-            alert("STEP 2");
-
-            const element = document.getElementById("certificate");
-
-            const canvas = await html2canvas(element);
-
-            alert("STEP 3");
-
-            const imageBase64 = canvas.toDataURL("image/png").split(",")[1];
-
-            try {
-
-                const res = await fetch("/send-certificate", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        email: user.email,
-                        name: user.name,
-                        imageBase64: imageBase64
-                    })
-                });
-
-                console.log("RESPONSE:", res);
-
-                alert("STEP 4 DONE ✅");
-
-            } catch (err) {
-                alert("❌ FETCH FAILED");
-                console.log("ERROR:", err);
-            }
+        if (res.ok) {
+            alert("✅ Mail anuppitom!");
+        } else {
+            alert("❌ Mail failed");
         }
+
+    } catch (err) {
+        alert("❌ Fetch failed");
+        console.log(err);
+    }
+}
 
     </script>
 
