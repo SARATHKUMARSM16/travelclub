@@ -97,7 +97,12 @@ function validateUser({ name, email, age, number }) {
 
 /* -------------------- PAGES -------------------- */
 
+// ✅ / -> login page
 app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "login.html"))
+);
+
+app.get("/adduser", (req, res) =>
   res.sendFile(path.join(__dirname, "index.html"))
 );
 
@@ -112,6 +117,21 @@ app.get("/editpage", (req, res) =>
 app.get("/certificate", (req, res) =>
   res.sendFile(path.join(__dirname, "certificate.html"))
 );
+
+/* -------------------- LOGIN -------------------- */
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  if (
+    username === process.env.ADMIN_USER &&
+    password === process.env.ADMIN_PASS
+  ) {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+});
 
 /* -------------------- ADD USER -------------------- */
 
@@ -240,39 +260,6 @@ app.get("/api/verify/:id", async (req, res) => {
     certificateId: user.certificateId
   });
 });
-
-                          //  LOGIN
-
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-
-  if (
-    username === process.env.ADMIN_USER &&
-    password === process.env.ADMIN_PASS
-  ) {
-    res.json({ success: true });
-  } else {
-    res.json({ success: false });
-  }
-});
-
-                          //  ROUTE
-app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "login.html"))
-);
-
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  if (
-    username === process.env.ADMIN_USER &&
-    password === process.env.ADMIN_PASS
-  ) {
-    res.json({ success: true });
-  } else {
-    res.json({ success: false });
-  }
-});
-
 
 /* -------------------- SERVER -------------------- */
 
