@@ -200,24 +200,13 @@ transporter.verify(function (error, success) {
   }
 });
 
+          // SEND CERTIFICATE
+
 app.post("/send-certificate", async (req, res) => {
   try {
     const { email, name, certificateId, pdfBase64 } = req.body;
 
     console.log("🚀 API HIT");
-
-    // Cloudinary la PDF upload pannrom
-    const uploadResult = await cloudinary.uploader.upload(
-      `data:application/pdf;base64,${pdfBase64}`,
-      {
-        folder: "certificates",
-        resource_type: "raw",
-        public_id: `certificate-${certificateId}`,
-        format: "pdf"
-      }
-    );
-
-    const pdfUrl = uploadResult.secure_url;
 
     await transporter.sendMail({
       from: '"The Boys Club" <sarathkumarsm16@gmail.com>',
@@ -226,20 +215,15 @@ app.post("/send-certificate", async (req, res) => {
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>Welcome, ${name}! 🎉</h2>
-          <p>Ungaloda welcome certificate ready!</p>
-          <a href="${pdfUrl}"
-             style="background:#c9a227; color:white; padding:12px 24px;
-                    text-decoration:none; border-radius:6px; font-weight:bold;">
-            Download Certificate PDF
-          </a>
-          <br/><br/>
+          <p>Ungaloda welcome certificate PDF attach pannirukkom!</p>
           <p>Certificate ID: <strong>${certificateId}</strong></p>
         </div>
       `,
       attachments: [
         {
           filename: `certificate-${name}.pdf`,
-          path: pdfUrl
+          content: Buffer.from(pdfBase64, "base64"),  // ✅ base64 direct attach
+          contentType: "application/pdf"
         }
       ]
     });
