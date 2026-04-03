@@ -202,7 +202,7 @@ transporter.verify(function (error, success) {
 
 app.post("/send-certificate", async (req, res) => {
   try {
-    const { email, name, certificateId } = req.body;
+    const { email, name, certificateId, pdfBase64 } = req.body;
 
     console.log("🚀 API HIT");
     console.log("TO:", email);
@@ -210,23 +210,24 @@ app.post("/send-certificate", async (req, res) => {
     const certificateLink = `https://travelclub-hwfv.onrender.com/certificate?id=${certificateId}`;
 
     await transporter.sendMail({
-      from: '"The Boys Club" <sarathkumarsm16@gmail.com>',  // ✅ verified sender
+      from: '"The Boys Club" <sarathkumarsm16@gmail.com>',
       to: email,
       subject: `Welcome Certificate - ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>Welcome, ${name}! 🎉</h2>
-          <p>Ungaloda welcome certificate ready-a irukku!</p>
-          <p>Keela irukka button-a click panni certificate-a paakalam:</p>
-          <a href="${certificateLink}"
-             style="background:#c9a227; color:white; padding:12px 24px;
-                    text-decoration:none; border-radius:6px; font-weight:bold;">
-            View My Certificate
-          </a>
-          <br/><br/>
+          <p>Ungaloda welcome certificate PDF attach pannirukkom!</p>
           <p>Certificate ID: <strong>${certificateId}</strong></p>
+          <p>Online paakanum na: <a href="${certificateLink}">Click here</a></p>
         </div>
-      `
+      `,
+      attachments: [
+        {
+          filename: `certificate-${name}.pdf`,
+          content: pdfBase64,
+          encoding: "base64"
+        }
+      ]
     });
 
     console.log("✅ MAIL SENT");

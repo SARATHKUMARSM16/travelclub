@@ -286,20 +286,52 @@ async function sendCertificate() {
     }
 
     try {
+        // Certificate canvas-a convert pannrom
+        const element = document.getElementById("certificate");
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            logging: false
+        });
+
+        // PDF create pannrom
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("landscape", "mm", "a4");
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgRatio = canvas.width / canvas.height;
+
+        let imgWidth = pageWidth;
+        let imgHeight = imgWidth / imgRatio;
+
+        if (imgHeight > pageHeight) {
+            imgHeight = pageHeight;
+            imgWidth = imgHeight * imgRatio;
+        }
+
+        const x = (pageWidth - imgWidth) / 2;
+        const y = (pageHeight - imgHeight) / 2;
+
+        const imgData = canvas.toDataURL("image/png");
+        pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+
+        // PDF-a base64-a convert pannrom
+        const pdfBase64 = pdf.output("datauristring").split(",")[1];
+
         const res = await fetch("/send-certificate", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 email: user.email,
                 name: user.name,
-                certificateId: user.certificateId  // ✅ imageBase64 -> certificateId
+                certificateId: user.certificateId,
+                pdfBase64: pdfBase64  // ✅ PDF attach pannrom
             })
         });
 
         if (res.ok) {
-            alert("✅ Mail anuppitom!");
+            alert("✅ Certificate PDF mail-la anuppitom!");
         } else {
             alert("❌ Mail failed");
         }
