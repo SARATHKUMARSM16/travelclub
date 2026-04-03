@@ -7,7 +7,7 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 require("dotenv").config();
 
 const app = express();
@@ -39,12 +39,6 @@ function requireAdmin(req, res, next) {
   }
 }
 
-/* -------------------- MONGODB -------------------- */
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Atlas Connected"))
-  .catch(err => console.log(err));
-
 /* -------------------- USER SCHEMA -------------------- */
 
 const userSchema = new mongoose.Schema({
@@ -63,12 +57,10 @@ const User = mongoose.model("User", userSchema);
 async function generateCertificateId() {
   let id;
   let exists = true;
-
   while (exists) {
     id = "CERT-" + Math.random().toString(36).substr(2, 6).toUpperCase();
     exists = await User.findOne({ certificateId: id });
   }
-
   return id;
 }
 
@@ -143,7 +135,6 @@ app.get("/editpage", requireAdmin, (req, res) =>
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-
   if (
     username === process.env.ADMIN_USER &&
     password === process.env.ADMIN_PASS
@@ -165,7 +156,6 @@ app.get("/logout", (req, res) => {
 /* -------------------- ADD USER -------------------- */
 
 app.post("/submit", requireAdmin, upload.single("image"), async (req, res) => {
-
   const error = validateUser(req.body);
   if (error) return res.send(error);
 
@@ -213,7 +203,6 @@ app.get("/user/:id", async (req, res) => {
 /* -------------------- UPDATE -------------------- */
 
 app.post("/update/:id", requireAdmin, upload.single("image"), async (req, res) => {
-
   const error = validateUser(req.body);
   if (error) return res.send(error);
 
@@ -279,7 +268,6 @@ app.post("/send-certificate", async (req, res) => {
 
 app.get("/api/verify/:id", async (req, res) => {
   const user = await User.findOne({ certificateId: req.params.id });
-
   if (!user) return res.json({ valid: false });
 
   res.json({
@@ -294,6 +282,9 @@ app.get("/api/verify/:id", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB Atlas Connected");
+    app.listen(PORT, () => console.log("Server running on port " + PORT));
+  })
+  .catch(err => console.log(err));
