@@ -205,9 +205,19 @@ app.post("/send-certificate", async (req, res) => {
     const { email, name, certificateId, pdfBase64 } = req.body;
 
     console.log("🚀 API HIT");
-    console.log("TO:", email);
 
-    const certificateLink = `https://travelclub-hwfv.onrender.com/certificate?id=${certificateId}`;
+    // Cloudinary la PDF upload pannrom
+    const uploadResult = await cloudinary.uploader.upload(
+      `data:application/pdf;base64,${pdfBase64}`,
+      {
+        folder: "certificates",
+        resource_type: "raw",
+        public_id: `certificate-${certificateId}`,
+        format: "pdf"
+      }
+    );
+
+    const pdfUrl = uploadResult.secure_url;
 
     await transporter.sendMail({
       from: '"The Boys Club" <sarathkumarsm16@gmail.com>',
@@ -216,16 +226,20 @@ app.post("/send-certificate", async (req, res) => {
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>Welcome, ${name}! 🎉</h2>
-          <p>Ungaloda welcome certificate PDF attach pannirukkom!</p>
+          <p>Ungaloda welcome certificate ready!</p>
+          <a href="${pdfUrl}"
+             style="background:#c9a227; color:white; padding:12px 24px;
+                    text-decoration:none; border-radius:6px; font-weight:bold;">
+            Download Certificate PDF
+          </a>
+          <br/><br/>
           <p>Certificate ID: <strong>${certificateId}</strong></p>
-          <p>Online paakanum na: <a href="${certificateLink}">Click here</a></p>
         </div>
       `,
       attachments: [
         {
           filename: `certificate-${name}.pdf`,
-          content: pdfBase64,
-          encoding: "base64"
+          path: pdfUrl
         }
       ]
     });

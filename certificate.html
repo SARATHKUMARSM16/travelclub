@@ -279,22 +279,12 @@
 
         // SEND EMAIL
 async function sendCertificate() {
-
-    if (!user) {
-        alert("User not loaded yet");
-        return;
-    }
+    if (!user) { alert("User not loaded yet"); return; }
 
     try {
-        // Certificate canvas-a convert pannrom
         const element = document.getElementById("certificate");
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-            logging: false
-        });
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
 
-        // PDF create pannrom
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF("landscape", "mm", "a4");
 
@@ -304,19 +294,12 @@ async function sendCertificate() {
 
         let imgWidth = pageWidth;
         let imgHeight = imgWidth / imgRatio;
-
-        if (imgHeight > pageHeight) {
-            imgHeight = pageHeight;
-            imgWidth = imgHeight * imgRatio;
-        }
+        if (imgHeight > pageHeight) { imgHeight = pageHeight; imgWidth = imgHeight * imgRatio; }
 
         const x = (pageWidth - imgWidth) / 2;
         const y = (pageHeight - imgHeight) / 2;
 
-        const imgData = canvas.toDataURL("image/png");
-        pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
-
-        // PDF-a base64-a convert pannrom
+        pdf.addImage(canvas.toDataURL("image/png"), "PNG", x, y, imgWidth, imgHeight);
         const pdfBase64 = pdf.output("datauristring").split(",")[1];
 
         const res = await fetch("/send-certificate", {
@@ -326,7 +309,7 @@ async function sendCertificate() {
                 email: user.email,
                 name: user.name,
                 certificateId: user.certificateId,
-                pdfBase64: pdfBase64  // ✅ PDF attach pannrom
+                pdfBase64: pdfBase64
             })
         });
 
