@@ -13,16 +13,16 @@ const app = express();
 
 /* -------------------- MIDDLEWARE -------------------- */
 
-app.use(cors({ origin: "*" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(express.json({ limit: "50mb" }));
-app.use(express.static(__dirname, { index: false }));
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
-// ✅ Session setup
 app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI  // ✅ MongoDB la session store
+  }),
   cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day
 }));
 
