@@ -23,8 +23,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
   resave: false,
   saveUninitialized: false,
-  store: new MongoStore({
-    mongooseConnection: mongoose.connection
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI
   }),
   cookie: { maxAge: 24 * 60 * 60 * 1000 }
 }));
