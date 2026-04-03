@@ -5,7 +5,7 @@ const path = require("path");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const Brevo = require("@getbrevo/brevo");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 require("dotenv").config();
 
 const app = express();
@@ -79,9 +79,11 @@ const upload = multer({
 
 /* -------------------- BREVO API -------------------- */
 
-const brevoClient = Brevo.ApiClient.instance;
-brevoClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
-const emailApi = new Brevo.TransactionalEmailsApi();
+const SibApiV3Sdk = require("sib-api-v3-sdk");
+
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
+const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 console.log("✅ Brevo API Ready");
 
