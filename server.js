@@ -7,7 +7,7 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo")(session);
 require("dotenv").config();
 
 const app = express();
