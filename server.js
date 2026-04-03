@@ -210,7 +210,7 @@ app.post("/send-certificate", async (req, res) => {
     const certificateLink = `https://travelclub-hwfv.onrender.com/certificate?id=${certificateId}`;
 
     await transporter.sendMail({
-      from: process.env.EMAIL,
+      from: '"The Boys Club" <sarathkumarsm16@gmail.com>',  // ✅ verified sender
       to: email,
       subject: `Welcome Certificate - ${name}`,
       html: `
