@@ -24,7 +24,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({
-    mongooseConnection: mongoose.connection  // ✅ .create() vendam
+    mongooseConnection: mongoose.connection
   }),
   cookie: { maxAge: 24 * 60 * 60 * 1000 }
 }));
