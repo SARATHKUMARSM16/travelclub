@@ -8,14 +8,18 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 const session = require("express-session");
 require("dotenv").config();
-
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const app = express();
 
 /* -------------------- MIDDLEWARE -------------------- */
 
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
+app.use(cors({ origin: "*" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.static(__dirname, { index: false }));
 
+// ✅ Session setup
 app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
   resave: false,
@@ -25,7 +29,6 @@ app.use(session({
   }),
   cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day
 }));
-
 /* -------------------- AUTH MIDDLEWARE -------------------- */
 
 function requireAdmin(req, res, next) {
