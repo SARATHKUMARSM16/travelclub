@@ -23,8 +23,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection  // ✅ .create() vendam
   }),
   cookie: { maxAge: 24 * 60 * 60 * 1000 }
 }));
