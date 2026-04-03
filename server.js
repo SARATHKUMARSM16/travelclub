@@ -3,9 +3,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 const multer = require("multer");
-const nodemailer = require("nodemailer");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const Brevo = require("@getbrevo/brevo");
 require("dotenv").config();
 
 const app = express();
@@ -77,6 +77,14 @@ const upload = multer({
   }
 });
 
+/* -------------------- BREVO API -------------------- */
+
+const brevoClient = Brevo.ApiClient.instance;
+brevoClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
+const emailApi = new Brevo.TransactionalEmailsApi();
+
+console.log("✅ Brevo API Ready");
+
 /* -------------------- VALIDATION -------------------- */
 
 function validateUser({ name, email, age, number }) {
@@ -119,7 +127,7 @@ app.post("/submit", upload.single("image"), async (req, res) => {
     email: req.body.email,
     age: Number(req.body.age),
     number: req.body.number,
-    image: req.file ? req.file.path : null,  // ✅ Cloudinary URL
+    image: req.file ? req.file.path : null,
     certificateId: certId
   });
 
@@ -167,7 +175,7 @@ app.post("/update/:id", upload.single("image"), async (req, res) => {
     number: req.body.number
   };
 
-  if (req.file) updateData.image = req.file.path;  // ✅ Cloudinary URL
+  if (req.file) updateData.image = req.file.path;
 
   await User.findByIdAndUpdate(req.params.id, updateData);
   res.redirect("/userspage");
@@ -180,53 +188,31 @@ app.delete("/delete/:id", async (req, res) => {
   res.send("Deleted");
 });
 
-/* -------------------- EMAIL -------------------- */
-
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  connectionTimeout: 60000,   // ✅ 60 seconds
-  greetingTimeout: 30000,     // ✅ 30 seconds
-  socketTimeout: 60000,       // ✅ 60 seconds
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASS
-  }
-});
-
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("❌ SMTP ERROR:", error);
-  } else {
-    console.log("✅ SMTP READY");
-  }
-});
-
-          // SEND CERTIFICATE
+/* -------------------- SEND CERTIFICATE -------------------- */
 
 app.post("/send-certificate", async (req, res) => {
   try {
     const { email, name, certificateId, pdfBase64 } = req.body;
 
     console.log("🚀 API HIT");
+    console.log("TO:", email);
 
-    await transporter.sendMail({
-      from: '"The Boys Club" <sarathkumarsm16@gmail.com>',
-      to: email,
+    await emailApi.sendTransacEmail({
+      sender: { name: "The Boys Club", email: "sarathkumarsm16@gmail.com" },
+      to: [{ email: email, name: name }],
       subject: `Welcome Certificate - ${name}`,
-      html: `
+      htmlContent: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>Welcome, ${name}! 🎉</h2>
           <p>Ungaloda welcome certificate PDF attach pannirukkom!</p>
           <p>Certificate ID: <strong>${certificateId}</strong></p>
+          <p>Warm regards,<br/>The Boys Club Team</p>
         </div>
       `,
-      attachments: [
+      attachment: [
         {
-          filename: `certificate-${name}.pdf`,
-          content: Buffer.from(pdfBase64, "base64"),  // ✅ base64 direct attach
-          contentType: "application/pdf"
+          name: `certificate-${name}.pdf`,
+          content: pdfBase64
         }
       ]
     });
