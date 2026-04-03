@@ -257,7 +257,7 @@ app.post("/login", (req, res) => {
 });
 
                           //  ROUTE
-app.get("/loginpage", (req, res) =>
+app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "login.html"))
 );
 
