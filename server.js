@@ -6,9 +6,10 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const SibApiV3Sdk = require("sib-api-v3-sdk");
-require("dotenv").config();
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+require("dotenv").config();
+
 const app = express();
 
 /* -------------------- MIDDLEWARE -------------------- */
@@ -18,16 +19,16 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.static(__dirname, { index: false }));
 
-// ✅ Session setup
 app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI  // ✅ MongoDB la session store
+    mongoUrl: process.env.MONGO_URI
   }),
-  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }
 }));
+
 /* -------------------- AUTH MIDDLEWARE -------------------- */
 
 function requireAdmin(req, res, next) {
@@ -118,7 +119,6 @@ function validateUser({ name, email, age, number }) {
 
 /* -------------------- PAGES -------------------- */
 
-// Public pages
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "login.html"))
 );
@@ -127,7 +127,6 @@ app.get("/certificate", (req, res) =>
   res.sendFile(path.join(__dirname, "certificate.html"))
 );
 
-// ✅ Protected pages — requireAdmin middleware
 app.get("/adduser", requireAdmin, (req, res) =>
   res.sendFile(path.join(__dirname, "index.html"))
 );
@@ -149,7 +148,7 @@ app.post("/login", (req, res) => {
     username === process.env.ADMIN_USER &&
     password === process.env.ADMIN_PASS
   ) {
-    req.session.isAdmin = true;  // ✅ Server side session set
+    req.session.isAdmin = true;
     res.json({ success: true });
   } else {
     res.json({ success: false });
