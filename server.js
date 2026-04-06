@@ -21,7 +21,7 @@ app.use(express.static(__dirname, { index: false }));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI
