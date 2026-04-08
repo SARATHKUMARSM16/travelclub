@@ -46,7 +46,6 @@
             overflow: hidden;
         }
 
-        /* ── Ambient forest glow ─────────────── */
         body::before {
             content: '';
             position: fixed; inset: 0;
@@ -61,7 +60,6 @@
             from { opacity: 0.7; } to { opacity: 1; }
         }
 
-        /* ── Grid texture ────────────────────── */
         body::after {
             content: '';
             position: fixed; inset: 0;
@@ -72,7 +70,6 @@
             pointer-events: none; z-index: 0;
         }
 
-        /* ── Floating leaves ─────────────────── */
         .leaves {
             position: fixed; inset: 0;
             pointer-events: none; z-index: 0; overflow: hidden;
@@ -94,7 +91,6 @@
             100% { opacity: 0;    top: 104%; transform: translateX(52px) rotate(345deg); }
         }
 
-        /* ── Fireflies ───────────────────────── */
         .ff {
             position: fixed; width: 3px; height: 3px;
             background: #95d5b2; border-radius: 50%;
@@ -114,13 +110,11 @@
             80%      { opacity: 0.9; transform: translate(17px,-11px); }
         }
 
-        /* ── Grass ───────────────────────────── */
         .grass {
             position: fixed; bottom: 0; left: 0; right: 0;
             height: 90px; pointer-events: none; z-index: 0;
         }
 
-        /* ── Card ────────────────────────────── */
         .box {
             position: relative; z-index: 2;
             background: rgba(9,15,11,0.88);
@@ -143,7 +137,6 @@
             to   { opacity: 1; transform: translateY(0)    scale(1); }
         }
 
-        /* Top green glow line */
         .box::before {
             content: '';
             position: absolute;
@@ -153,7 +146,6 @@
             border-radius: 2px;
         }
 
-        /* ── Card icon ───────────────────────── */
         .card-icon {
             width: 56px; height: 56px;
             margin: 0 auto 14px;
@@ -169,7 +161,6 @@
             50%      { box-shadow: 0 0 30px rgba(82,183,136,0.42); }
         }
 
-        /* ── Heading ─────────────────────────── */
         h2 {
             font-family: 'Playfair Display', serif;
             font-size: 22px;
@@ -189,7 +180,6 @@
             margin-bottom: 24px;
         }
 
-        /* ── Input wrap ──────────────────────── */
         .input-wrap {
             position: relative;
             margin: 0 0 12px;
@@ -226,7 +216,6 @@
             box-shadow: 0 0 0 3px rgba(82,183,136,0.08), 0 0 16px rgba(82,183,136,0.06);
         }
 
-        /* ── Verify button ───────────────────── */
         button {
             width: 100%;
             padding: 13px;
@@ -258,12 +247,10 @@
         button:active { transform: scale(0.97); }
         button span { position: relative; z-index: 1; }
 
-        /* ── Result box ──────────────────────── */
         #resultBox {
             margin-top: 20px;
         }
 
-        /* ── Valid result ────────────────────── */
         .valid {
             background: rgb(255, 255, 255);
             border: 1.5px solid rgba(82,183,136,0.3);
@@ -327,7 +314,6 @@
             word-break: break-all;
         }
 
-        /* ── Invalid result ──────────────────── */
         .invalid {
             background: rgba(224,82,82,0.07);
             border: 1.5px solid rgba(224,82,82,0.25);
@@ -345,7 +331,6 @@
             animation: resultPop 0.3s cubic-bezier(0.34,1.4,0.64,1) both;
         }
 
-        /* ── Divider ─────────────────────────── */
         .divider {
             display: flex; align-items: center; gap: 10px;
             margin: 16px 0 0;
@@ -356,7 +341,6 @@
         }
         .divider span { font-size: 12px; color: rgba(82,183,136,0.3); }
 
-        /* ── Scrollbar ───────────────────────── */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--green); border-radius: 4px; }
@@ -365,7 +349,6 @@
 
 <body>
 
-    <!-- Floating leaves -->
     <div class="leaves">
         <svg class="leaf" viewBox="0 0 20 28" fill="none"><path d="M10 2C10 2 2 8 2 16c0 5.5 3.6 9.5 8 9.5S18 21.5 18 16C18 8 10 2 10 2Z" fill="rgba(82,183,136,0.45)"/><line x1="10" y1="26" x2="10" y2="10" stroke="rgba(82,183,136,0.3)" stroke-width="1"/></svg>
         <svg class="leaf" viewBox="0 0 20 28" fill="none"><path d="M10 2C10 2 2 8 2 16c0 5.5 3.6 9.5 8 9.5S18 21.5 18 16C18 8 10 2 10 2Z" fill="rgba(116,198,157,0.35)"/><line x1="10" y1="26" x2="10" y2="10" stroke="rgba(116,198,157,0.25)" stroke-width="1"/></svg>
@@ -375,20 +358,17 @@
         <svg class="leaf" viewBox="0 0 20 28" fill="none"><path d="M10 2C10 2 2 8 2 16c0 5.5 3.6 9.5 8 9.5S18 21.5 18 16C18 8 10 2 10 2Z" fill="rgba(82,183,136,0.28)"/><line x1="10" y1="26" x2="10" y2="10" stroke="rgba(82,183,136,0.18)" stroke-width="1"/></svg>
     </div>
 
-    <!-- Fireflies -->
     <div class="ff"></div>
     <div class="ff"></div>
     <div class="ff"></div>
     <div class="ff"></div>
     <div class="ff"></div>
 
-    <!-- Grass -->
     <svg class="grass" viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M0,60 Q25,30 50,52 Q75,74 100,45 Q125,16 150,50 Q175,84 200,55 Q225,26 250,56 Q275,86 300,58 Q325,30 350,56 Q375,82 400,52 Q425,22 450,55 Q475,88 500,60 Q525,32 550,58 Q575,84 600,55 Q625,26 650,58 Q675,90 700,60 Q725,30 750,56 Q775,82 800,55 Q825,28 850,58 Q875,88 900,60 Q925,32 950,56 Q975,80 1000,55 Q1025,30 1050,58 Q1075,86 1100,60 Q1125,34 1150,58 Q1175,82 1200,55 Q1225,28 1250,60 Q1275,92 1300,60 Q1325,28 1350,58 Q1375,88 1400,55 Q1420,70 1440,60 L1440,90 L0,90 Z" fill="rgba(27,67,50,0.5)"/>
         <path d="M0,75 Q35,58 70,72 Q105,86 140,68 Q175,50 210,72 Q245,94 280,74 Q315,54 350,74 Q385,94 420,72 Q455,50 490,74 Q525,98 560,74 Q595,50 630,72 Q665,94 700,74 Q735,54 770,74 Q805,94 840,72 Q875,50 910,74 Q945,98 980,74 Q1015,50 1050,72 Q1085,94 1120,74 Q1155,54 1190,74 Q1225,94 1260,72 Q1295,50 1330,74 Q1365,98 1400,76 Q1420,84 1440,76 L1440,90 L0,90 Z" fill="rgba(9,15,11,0.96)"/>
     </svg>
 
-    <!-- ══ CARD ══ -->
     <div class="box">
 
         <div class="card-icon">
