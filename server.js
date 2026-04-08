@@ -21,12 +21,16 @@ app.use(express.static(__dirname, { index: false }));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
-  resave: true,
+  resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI
   }),
-  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { 
+  maxAge: 24 * 60 * 60 * 1000,
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",  // ✅ Render la auto HTTPS
+  sameSite: "lax"}
 }));
 
 /* -------------------- AUTH MIDDLEWARE -------------------- */
