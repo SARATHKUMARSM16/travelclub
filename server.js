@@ -15,7 +15,7 @@ const app = express();
 /* -------------------- MIDDLEWARE -------------------- */
 
 app.use(cors({
-  origin: "https://travelclub-hwfv.onrender.com", // unga site URL
+  origin: true,
   credentials: true
 }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
