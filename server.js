@@ -31,8 +31,8 @@ app.use(session({
   }),
   cookie: {maxAge: 24 * 60 * 60 * 1000,
   httpOnly: true,
-  secure: true,
-  sameSite: "none"}
+  secure: false,
+  sameSite: "lax"}
 }));
 
 /* -------------------- AUTH MIDDLEWARE -------------------- */
