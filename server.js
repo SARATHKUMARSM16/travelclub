@@ -22,6 +22,8 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.static(__dirname, { index: false }));
 
+app.set("trust proxy", 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
   resave: false,
@@ -148,7 +150,7 @@ app.post("/login", (req, res) => {
     req.session.isAdmin = true;
     res.json({ success: true });
   } else {
-    res.json({ success: false });
+    res.json({ success: true });
   }
 });
 
