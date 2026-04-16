@@ -31,10 +31,12 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI
   }),
-  cookie: {maxAge: 24 * 60 * 60 * 1000,
-  httpOnly: true,
-  secure: true,
-  sameSite: "none"}
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    sameSite: "none"
+  }
 }));
 
 /* -------------------- AUTH MIDDLEWARE -------------------- */
@@ -149,8 +151,11 @@ app.post("/login", (req, res) => {
   ) {
     req.session.isAdmin = true;
     res.json({ success: true });
+    req.session.save(() => {
+      res.json({ success: true });
+    });
   } else {
-    res.json({ success: true });
+    res.json({ success: false });
   }
 });
 
