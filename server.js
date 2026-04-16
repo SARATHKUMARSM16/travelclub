@@ -145,17 +145,22 @@ app.get("/editpage", requireAdmin, (req, res) =>
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
+
   if (
     username === process.env.ADMIN_USER &&
     password === process.env.ADMIN_PASS
   ) {
     req.session.isAdmin = true;
-    res.json({ success: true });
-    req.session.save(() => {
-      res.json({ success: true });
+
+    req.session.save((err) => {
+      if (err) {
+        return res.status(500).json({ success: false });
+      }
+      return res.json({ success: true });
     });
+
   } else {
-    res.json({ success: false });
+    return res.json({ success: false });
   }
 });
 
