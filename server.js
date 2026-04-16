@@ -15,7 +15,7 @@ const app = express();
 /* -------------------- MIDDLEWARE -------------------- */
 
 app.use(cors({
-  origin: "https://travelclub-hwfv.onrender.com/",
+  origin: "https://travelclub-hwfv.onrender.com",
   credentials: true
 }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
