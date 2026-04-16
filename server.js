@@ -15,7 +15,7 @@ const app = express();
 /* -------------------- MIDDLEWARE -------------------- */
 
 app.use(cors({
-  origin: true,
+  origin: "https://travelclub-hwfv.onrender.com/",
   credentials: true
 }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
@@ -31,8 +31,8 @@ app.use(session({
   }),
   cookie: {maxAge: 24 * 60 * 60 * 1000,
   httpOnly: true,
-  secure: false,
-  sameSite: "lax"}
+  secure: true,
+  sameSite: "none"}
 }));
 
 /* -------------------- AUTH MIDDLEWARE -------------------- */
