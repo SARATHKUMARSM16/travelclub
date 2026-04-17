@@ -287,11 +287,11 @@ async function sendCertificate() {
         const clone = original.cloneNode(true);
         clone.style.position = "absolute";
         clone.style.left = "-9999px";
-        clone.style.width = "640px";  // small size
+        clone.style.width = "640px";  
         document.body.appendChild(clone);
 
         const canvas = await html2canvas(clone, {
-            scale: 1,        // ✅ 2 -> 1 (size kudutha)
+            scale: 1,        
             useCORS: true,
             logging: false
         });
@@ -330,7 +330,7 @@ async function sendCertificate() {
         });
 
         if (res.ok) {
-            alert("✅ Certificate PDF mail-la anuppitom!");
+            alert("Your certificate PDF has been successfully sent to your email.");
         } else {
             alert("❌ Mail failed");
         }
