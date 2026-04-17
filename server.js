@@ -260,7 +260,7 @@ app.post("/send-certificate", async (req, res) => {
       htmlContent: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>Welcome, ${name}! 🎉</h2>
-          <p>Ungaloda welcome certificate PDF attach pannirukkom!</p>
+          <p>Your welcome certificate is attached as a PDF. We’re excited to have you with us!</p>
           <p>Certificate ID: <strong>${certificateId}</strong></p>
           <p>Warm regards,<br/>The Boys Club Team</p>
         </div>
