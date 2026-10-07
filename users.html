@@ -736,10 +736,6 @@
   <!-- ══════════════ ORIGINAL SCRIPT — ZERO CHANGES ══════════════ -->
   <script>
 
-    if (localStorage.getItem("isAdmin") !== "true") {
-      window.location.href = "/";
-    }
-
     function escapeHTML(str) {
       return str.replace(/[&<>"']/g, function (m) {
         return {
