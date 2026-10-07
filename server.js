@@ -26,11 +26,16 @@ app.set("trust proxy", 1);
 
 app.use(session({
   secret: process.env.SESSION_SECRET || "travelclub_secret_key",
+
   resave: false,
   saveUninitialized: false,
+
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI
   }),
+
+  proxy: true,
+
   cookie: {
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
@@ -42,9 +47,15 @@ app.use(session({
 /* -------------------- AUTH MIDDLEWARE -------------------- */
 
 function requireAdmin(req, res, next) {
+
+  console.log("SESSION ID:", req.sessionID);
+  console.log("SESSION DATA:", req.session);
+
   if (req.session && req.session.isAdmin) {
+    console.log("✅ ADMIN AUTHORIZED");
     next();
   } else {
+    console.log("❌ SESSION NOT FOUND");
     res.redirect("/");
   }
 }
@@ -141,10 +152,15 @@ app.get("/editpage", requireAdmin, (req, res) =>
   res.sendFile(path.join(__dirname, "edit.html"))
 );
 
+
 /* -------------------- LOGIN -------------------- */
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
+
+  console.log("LOGIN USER:", username);
+  console.log("ADMIN USER EXISTS:", !!process.env.ADMIN_USER);
+  console.log("ADMIN PASS EXISTS:", !!process.env.ADMIN_PASS);
 
   if (
     username === process.env.ADMIN_USER &&
@@ -153,13 +169,21 @@ app.post("/login", (req, res) => {
     req.session.isAdmin = true;
 
     req.session.save((err) => {
+
       if (err) {
+        console.log("❌ SESSION SAVE ERROR:", err);
         return res.status(500).json({ success: false });
       }
+
+      console.log("✅ SESSION SAVED");
+      console.log("SESSION ID:", req.sessionID);
+      console.log("IS ADMIN:", req.session.isAdmin);
+
       return res.json({ success: true });
     });
 
   } else {
+    console.log("❌ INVALID LOGIN");
     return res.json({ success: false });
   }
 });
