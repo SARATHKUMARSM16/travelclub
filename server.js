@@ -288,7 +288,6 @@ app.post("/send-certificate", async (req, res) => {
           <p>Certificate ID: <strong>${certificateId}</strong></p>
           <p>Warm regards,<br/>The Boys Club Team</p>
           <p>Here is your chat link:</p>
-          <p>Here is your chat link:</p>
           <p><a href="https://chatapp-1-gjke.onrender.com/" target="_blank">
              https://chatapp-1-gjke.onrender.com/
           </a></p>
